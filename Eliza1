@@ -1,0 +1,30 @@
+import random
+
+user_template="USER : {0}"
+bot_template="BOT : {0}"
+
+responses={'question': ["I don't know :(", 'you tell me!'],
+ 'statement': ['tell me more!',
+  'why do you think that?',
+  'how long have you felt this way?',
+  'I find that extremely interesting',
+  'can you back that up?',
+  'oh wow!',
+  ':)']}
+
+def respond(message):
+    if message.endswith("?"):
+        bot_message=random.choice(responses["question"])
+    else:
+        bot_message=random.choice(responses['statement'])
+    return bot_message
+
+
+#Defining send_message function
+def send_message(message):
+    print(user_template.format(message))
+    response=respond(message)
+    print(bot_template.format(response))
+
+
+send_message("I need a chocolate")
