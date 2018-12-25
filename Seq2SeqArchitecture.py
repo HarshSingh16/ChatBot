@@ -135,3 +135,24 @@ def seq2seq_model(input,output,keep_prob,batch_size,sequence_length,answers_num_
                                                       questionswordstoint,
                                                       keep_prob,
                                                       batch_size)
+    def seq2seq_model(input,output,keep_prob,batch_size,sequence_length,answers_num_words,questions_num_words,encoder_embedding_size,decoder_embedding_size,rnn_size, num_layers,questionswordstoint):
+    encoder_embedded_input= tf.contrib.layers.embed_sequence(inputs,
+                                                             answer_num_words+1,
+                                                             encoder_embedding_size,
+                                                             initializer=tf.random_uniform_initializer(0,1))
+    encoder_state=encoder_rnn(encoder_embedded_input,rnn_size, num_layers, keep_prob, sequence_length)
+    preprocessed_targets = preprocess_targets(output,questionswordstoint,batch_size)
+    decoder_embeddings_matrix=tf.Variable(tf.random_uniform([questions_num_words+1,
+                                                            decoder_embedding_size],0,1))
+    decoder_embedded_input=tf.nn.embedding_lookup(decoder_embeddings_matrix,preprocessed_targets)
+    training_predictions,test_predictions=decoder_rnn(decoder_embedded_input,
+                                                      decoder_embeddings_matrix,
+                                                      encoder_state,
+                                                      question_num_words,
+                                                      sequence_length,
+                                                      rnn_size, 
+                                                      num_layers,
+                                                      questionswordstoint,
+                                                      keep_prob,
+                                                      batch_size)
+    return training_predictions,test_predictions
